@@ -61,7 +61,11 @@ function ncClient(creds) {
 }
 
 async function resolveStreamToNcParams(stream, nc, { getRead = true } = {}) {
-  const params = { getRead, batchSize: -1, type: stream.type || 3, id: stream.id || 0 };
+  // The NC API does not support getRead=false for already-filtered list types
+  // (starred, feed, folder). For the starred stream (type=2), always fetch all
+  // starred items regardless of read state to avoid an NC API error response.
+  const effectiveGetRead = stream.type === 2 ? true : getRead;
+  const params = { getRead: effectiveGetRead, batchSize: -1, type: stream.type || 3, id: stream.id || 0 };
 
   if (stream.type === 0) {
     // Feed stream — find feed by URL
@@ -471,7 +475,17 @@ router.get('/stream/items/ids', async (req, res) => {
     if (continuation) ncParams.offset = parseInt(continuation, 10) || 0;
 
     const items = await nc.getItems(ncParams);
-    const itemRefs = items.map(i => ({ id: toLongFormId(i.id), directStreamIds: [], timestampUsec: `${(i.pubDate || 0) * 1000000}` }));
+    const userId = creds.username;
+    const itemRefs = items.map(i => {
+      const directStreamIds = [`user/${userId}/state/com.google/reading-list`];
+      if (i.unread === false || i.unread === 0) {
+        directStreamIds.push(`user/${userId}/state/com.google/read`);
+      }
+      if (i.starred === true || i.starred === 1) {
+        directStreamIds.push(`user/${userId}/state/com.google/starred`);
+      }
+      return { id: toLongFormId(i.id), directStreamIds, timestampUsec: `${(i.pubDate || 0) * 1000000}` };
+    });
 
     const response = { itemRefs };
     if (items.length === count) {

@@ -60,8 +60,8 @@ Authorization: GoogleLogin auth=<token>
 | `GET  /reader/api/0/subscribed`           | `GET /feeds`                      |
 | `GET  /reader/api/0/stream/contents/*`    | `GET /items`                      |
 | `GET  /reader/api/0/stream/items/ids`     | `GET /items`                      |
-| `GET/POST /reader/api/0/stream/items/contents` | `GET /items`               |
-| `POST /reader/api/0/edit-tag`             | `POST /items/{id}/read|unread|star|unstar` |
+| `GET\|POST /reader/api/0/stream/items/contents` | `GET /items`               |
+| `POST /reader/api/0/edit-tag`             | `POST /items/{id}/read\|unread\|star\|unstar` |
 | `POST /reader/api/0/mark-all-as-read`     | `POST /feeds/{id}/read`, `/folders/{id}/read`, `/items/read` |
 | `GET  /reader/api/0/preference/list`      | Static response                   |
 | `GET  /reader/api/0/preference/stream/list` | Static response                |

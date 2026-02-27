@@ -61,7 +61,11 @@ function ncClient(creds) {
 }
 
 async function resolveStreamToNcParams(stream, nc, { getRead = true } = {}) {
-  const params = { getRead, batchSize: -1, type: stream.type || 3, id: stream.id || 0 };
+  // The NC API does not support getRead=false for already-filtered list types
+  // (starred, feed, folder). For the starred stream (type=2), always fetch all
+  // starred items regardless of read state to avoid an NC API error response.
+  const effectiveGetRead = stream.type === 2 ? true : getRead;
+  const params = { getRead: effectiveGetRead, batchSize: -1, type: stream.type || 3, id: stream.id || 0 };
 
   if (stream.type === 0) {
     // Feed stream — find feed by URL

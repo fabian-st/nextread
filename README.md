@@ -54,8 +54,8 @@ Authorization: GoogleLogin auth=<token>
 | `GET  /reader/api/0/tag/list`             | `GET /folders`                    |
 | `POST /reader/api/0/disable-tag`          | `DELETE /folders/{id}`            |
 | `POST /reader/api/0/rename-tag`           | `PUT /folders/{id}`               |
-| `GET  /reader/api/0/subscription/list`    | `GET /feeds` + `GET /folders`     |
-| `POST /reader/api/0/subscription/edit`    | `POST/DELETE /feeds`, `POST /feeds/{id}/move` |
+| `GET  /reader/api/0/subscription/list`    | `GET /feeds`, `GET /folders`     |
+| `POST /reader/api/0/subscription/edit`    | `POST\|DELETE /feeds`, `POST /feeds/{id}/move` |
 | `POST /reader/api/0/subscription/quickadd` | `POST /feeds`                   |
 | `GET  /reader/api/0/subscribed`           | `GET /feeds`                      |
 | `GET  /reader/api/0/stream/contents/*`    | `GET /items`                      |

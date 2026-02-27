@@ -475,7 +475,17 @@ router.get('/stream/items/ids', async (req, res) => {
     if (continuation) ncParams.offset = parseInt(continuation, 10) || 0;
 
     const items = await nc.getItems(ncParams);
-    const itemRefs = items.map(i => ({ id: toLongFormId(i.id), directStreamIds: [], timestampUsec: `${(i.pubDate || 0) * 1000000}` }));
+    const userId = creds.username;
+    const itemRefs = items.map(i => {
+      const directStreamIds = [`user/${userId}/state/com.google/reading-list`];
+      if (i.unread === false || i.unread === 0) {
+        directStreamIds.push(`user/${userId}/state/com.google/read`);
+      }
+      if (i.starred === true || i.starred === 1) {
+        directStreamIds.push(`user/${userId}/state/com.google/starred`);
+      }
+      return { id: toLongFormId(i.id), directStreamIds, timestampUsec: `${(i.pubDate || 0) * 1000000}` };
+    });
 
     const response = { itemRefs };
     if (items.length === count) {

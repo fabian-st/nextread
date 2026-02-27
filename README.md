@@ -1,3 +1,5 @@
+[![Docker Repository on Quay](https://quay.io/repository/fabian-st/nextread/status "Docker Repository on Quay")](https://quay.io/repository/fabian-st/nextread)
+
 # nextread
 
 A service that translates Google Reader API requests into [Nextcloud News](https://github.com/nextcloud/news) API calls, allowing RSS reader clients that support the Google Reader API to connect to a Nextcloud News instance.

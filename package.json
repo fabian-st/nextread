@@ -1,0 +1,27 @@
+{
+  "name": "nextread",
+  "version": "1.0.0",
+  "description": "A service for translating FeedHQ (Google Reader) API requests to the Nextcloud News API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabian-st/nextread.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/fabian-st/nextread/issues"
+  },
+  "homepage": "https://github.com/fabian-st/nextread#readme",
+  "dependencies": {
+    "axios": "^1.13.5",
+    "express": "^5.2.1",
+    "uuid": "^13.0.0"
+  }
+}

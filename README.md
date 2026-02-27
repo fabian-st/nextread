@@ -1,6 +1,6 @@
 # nextread
 
-A service that translates (Google) Reader API requests into [Nextcloud News](https://github.com/nextcloud/news) API calls, allowing RSS reader clients that support the Google Reader API to connect to a Nextcloud News instance.
+A service that translates Google Reader API requests into [Nextcloud News](https://github.com/nextcloud/news) API calls, allowing RSS reader clients that support the Google Reader API to connect to a Nextcloud News instance.
 
 ## How it works
 
@@ -41,7 +41,7 @@ NEXTCLOUD_URL=https://cloud.example.com docker compose up
 
 ## Authentication
 
-Clients authenticate with their Nextcloud username and password via the (Google) Reader API `ClientLogin` endpoint:
+Clients authenticate with their Nextcloud username and password via the Google Reader API `ClientLogin` endpoint:
 
 ```
 POST /accounts/ClientLogin
@@ -58,7 +58,7 @@ Authorization: GoogleLogin auth=<token>
 
 ## Supported API endpoints
 
-| (Google) Reader API endpoint              | Nextcloud News equivalent         |
+| Google Reader API endpoint              | Nextcloud News equivalent         |
 |-------------------------------------------|-----------------------------------|
 | `POST /accounts/ClientLogin`              | Validates via NC `/version`       |
 | `GET  /reader/api/0/token`                | Issues a POST token               |

@@ -1,0 +1,615 @@
+{
+  "info": {
+    "name": "Nextread API",
+    "description": "Postman collection for the Nextread service — a FeedHQ (Google Reader) API to Nextcloud News API translator.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "description": "Base URL of the Nextread service"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "description": "Google Reader-style auth token obtained from /accounts/ClientLogin"
+    },
+    {
+      "key": "post_token",
+      "value": "",
+      "description": "Short-lived POST token obtained from /reader/api/0/token"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Client Login (POST)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "Email", "value": "user@example.com", "description": "User email" },
+                { "key": "Passwd", "value": "password", "description": "User password" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/accounts/ClientLogin",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "ClientLogin"]
+            },
+            "description": "Authenticate and obtain a Google Reader-style auth token. Returns SID, LSID and Auth values as plain text."
+          }
+        },
+        {
+          "name": "Client Login (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounts/ClientLogin?Email=user@example.com&Passwd=password",
+              "host": ["{{base_url}}"],
+              "path": ["accounts", "ClientLogin"],
+              "query": [
+                { "key": "Email", "value": "user@example.com" },
+                { "key": "Passwd", "value": "password" }
+              ]
+            },
+            "description": "Authenticate via GET. POST is strongly recommended; this is provided for compatibility."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reader API",
+      "item": [
+        {
+          "name": "Get POST Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "GoogleLogin auth={{auth_token}}",
+                "description": "Auth token from ClientLogin"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reader/api/0/token",
+              "host": ["{{base_url}}"],
+              "path": ["reader", "api", "0", "token"]
+            },
+            "description": "Retrieve a short-lived POST token required for mutating API calls."
+          }
+        },
+        {
+          "name": "Get User Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "GoogleLogin auth={{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reader/api/0/user-info?output=json",
+              "host": ["{{base_url}}"],
+              "path": ["reader", "api", "0", "user-info"],
+              "query": [
+                { "key": "output", "value": "json" }
+              ]
+            },
+            "description": "Returns details about the authenticated user."
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "GoogleLogin auth={{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reader/api/0/unread-count?output=json",
+              "host": ["{{base_url}}"],
+              "path": ["reader", "api", "0", "unread-count"],
+              "query": [
+                { "key": "output", "value": "json" }
+              ]
+            },
+            "description": "Returns all streams that have unread items, along with their unread count."
+          }
+        },
+        {
+          "name": "Tags",
+          "item": [
+            {
+              "name": "List Tags",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/tag/list?output=json",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "tag", "list"],
+                  "query": [
+                    { "key": "output", "value": "json" }
+                  ]
+                },
+                "description": "Returns the list of special tags and labels."
+              }
+            },
+            {
+              "name": "Disable Tag",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "s", "value": "user/-/label/MyLabel", "description": "Stream ID of the category to delete (or use 't')" },
+                    { "key": "t", "value": "", "description": "Category (label) name — alternative to 's'" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/disable-tag",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "disable-tag"]
+                },
+                "description": "Deletes a category or tag. Feeds belonging to it are moved to the top-level."
+              }
+            },
+            {
+              "name": "Rename Tag",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "s", "value": "user/-/label/OldLabel", "description": "Stream ID of the category to rename (or use 't')" },
+                    { "key": "t", "value": "", "description": "Category (label) name — alternative to 's'" },
+                    { "key": "dest", "value": "user/-/label/NewLabel", "description": "New label name as a stream ID" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/rename-tag",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "rename-tag"]
+                },
+                "description": "Renames a category."
+              }
+            },
+            {
+              "name": "Edit Tag",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "i", "value": "12345", "description": "Item ID (can be repeated)" },
+                    { "key": "a", "value": "user/-/state/com.google/read", "description": "Tag to add (can be repeated)" },
+                    { "key": "r", "value": "", "description": "Tag to remove (can be repeated)" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/edit-tag",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "edit-tag"]
+                },
+                "description": "Adds or removes tags from items. Used to mark items as read/unread or star/unstar them."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Subscriptions",
+          "item": [
+            {
+              "name": "List Subscriptions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/subscription/list?output=json",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "subscription", "list"],
+                  "query": [
+                    { "key": "output", "value": "json" }
+                  ]
+                },
+                "description": "Lists all subscriptions (feeds)."
+              }
+            },
+            {
+              "name": "Subscribe to Feed",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "ac", "value": "subscribe", "description": "Action: subscribe" },
+                    { "key": "s", "value": "feed/https://example.com/rss", "description": "Stream ID of the feed to subscribe to" },
+                    { "key": "t", "value": "My Feed", "description": "Name for this subscription" },
+                    { "key": "a", "value": "user/-/label/Tech", "description": "(Optional) Stream ID of a category" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/subscription/edit",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "subscription", "edit"]
+                },
+                "description": "Creates a new subscription."
+              }
+            },
+            {
+              "name": "Edit Subscription",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "ac", "value": "edit", "description": "Action: edit" },
+                    { "key": "s", "value": "feed/https://example.com/rss", "description": "Stream ID of the feed to edit" },
+                    { "key": "t", "value": "New Title", "description": "New title for the feed" },
+                    { "key": "a", "value": "user/-/label/Tech", "description": "Stream ID of a category to add the feed to" },
+                    { "key": "r", "value": "", "description": "Stream ID of a category to remove the feed from" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/subscription/edit",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "subscription", "edit"]
+                },
+                "description": "Edits an existing subscription."
+              }
+            },
+            {
+              "name": "Unsubscribe from Feed",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "ac", "value": "unsubscribe", "description": "Action: unsubscribe" },
+                    { "key": "s", "value": "feed/https://example.com/rss", "description": "Stream ID of the feed to unsubscribe from" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/subscription/edit",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "subscription", "edit"]
+                },
+                "description": "Deletes a subscription."
+              }
+            },
+            {
+              "name": "Quick Add Subscription",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                    { "key": "quickadd", "value": "https://example.com/rss", "description": "URL of the feed to add" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/subscription/quickadd",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "subscription", "quickadd"]
+                },
+                "description": "Adds a new subscription given only the feed URL."
+              }
+            },
+            {
+              "name": "Check Subscribed",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/subscribed?s=feed/https://example.com/rss",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "subscribed"],
+                  "query": [
+                    { "key": "s", "value": "feed/https://example.com/rss", "description": "Stream ID of the feed to check" }
+                  ]
+                },
+                "description": "Returns whether the user is subscribed to a given feed."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Stream",
+          "item": [
+            {
+              "name": "Get Stream Contents (Reading List)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/stream/contents/user/-/state/com.google/reading-list?output=json&n=20",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "stream", "contents", "user", "-", "state", "com.google", "reading-list"],
+                  "query": [
+                    { "key": "output", "value": "json" },
+                    { "key": "n", "value": "20", "description": "Number of items per page" },
+                    { "key": "r", "value": "", "description": "Sort order: 'o' for oldest first", "disabled": true },
+                    { "key": "c", "value": "", "description": "Continuation token for pagination", "disabled": true },
+                    { "key": "xt", "value": "", "description": "Stream ID to exclude", "disabled": true }
+                  ]
+                },
+                "description": "Returns paginated feed items for a given stream. The stream ID is appended to the path."
+              }
+            },
+            {
+              "name": "Get Stream Contents (Starred)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/stream/contents/user/-/state/com.google/starred?output=json&n=20",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "stream", "contents", "user", "-", "state", "com.google", "starred"],
+                  "query": [
+                    { "key": "output", "value": "json" },
+                    { "key": "n", "value": "20" }
+                  ]
+                },
+                "description": "Returns paginated starred items."
+              }
+            },
+            {
+              "name": "Get Stream Item IDs",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/stream/items/ids?output=json&s=user/-/state/com.google/reading-list&n=20",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "stream", "items", "ids"],
+                  "query": [
+                    { "key": "output", "value": "json" },
+                    { "key": "s", "value": "user/-/state/com.google/reading-list", "description": "Stream ID" },
+                    { "key": "n", "value": "20", "description": "Number of item IDs per page" },
+                    { "key": "c", "value": "", "description": "Continuation token", "disabled": true },
+                    { "key": "xt", "value": "", "description": "Stream ID to exclude", "disabled": true }
+                  ]
+                },
+                "description": "Returns item IDs for a given stream ID."
+              }
+            },
+            {
+              "name": "Get Stream Item Contents (GET)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/stream/items/contents?output=json&i=12345&i=67890",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "stream", "items", "contents"],
+                  "query": [
+                    { "key": "output", "value": "json" },
+                    { "key": "i", "value": "12345", "description": "Item ID (can be repeated)" },
+                    { "key": "i", "value": "67890", "description": "Item ID (can be repeated)" }
+                  ]
+                },
+                "description": "Returns details about the requested feed items."
+              }
+            },
+            {
+              "name": "Get Stream Item Contents (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    { "key": "i", "value": "12345", "description": "Item ID (can be repeated)" },
+                    { "key": "i", "value": "67890", "description": "Item ID (can be repeated)" },
+                    { "key": "output", "value": "json" }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/stream/items/contents",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "stream", "items", "contents"]
+                },
+                "description": "Returns details about the requested feed items. Use POST for large numbers of items to avoid URI length limits."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mark All As Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "GoogleLogin auth={{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "T", "value": "{{post_token}}", "description": "POST token" },
+                { "key": "s", "value": "user/-/state/com.google/reading-list", "description": "Stream ID to mark as read" },
+                { "key": "ts", "value": "", "description": "(Optional) Epoch timestamp in microseconds; only items older than this are marked read", "disabled": true }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/reader/api/0/mark-all-as-read",
+              "host": ["{{base_url}}"],
+              "path": ["reader", "api", "0", "mark-all-as-read"]
+            },
+            "description": "Marks all items in a stream as read."
+          }
+        },
+        {
+          "name": "Preferences",
+          "item": [
+            {
+              "name": "List Preferences",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/preference/list?output=json",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "preference", "list"],
+                  "query": [
+                    { "key": "output", "value": "json" }
+                  ]
+                },
+                "description": "Returns user preferences."
+              }
+            },
+            {
+              "name": "List Stream Preferences",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "GoogleLogin auth={{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/reader/api/0/preference/stream/list?output=json",
+                  "host": ["{{base_url}}"],
+                  "path": ["reader", "api", "0", "preference", "stream", "list"],
+                  "query": [
+                    { "key": "output", "value": "json" }
+                  ]
+                },
+                "description": "Returns per-stream preferences."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Friend List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "GoogleLogin auth={{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reader/api/0/friend/list?output=json",
+              "host": ["{{base_url}}"],
+              "path": ["reader", "api", "0", "friend", "list"],
+              "query": [
+                { "key": "output", "value": "json" }
+              ]
+            },
+            "description": "Returns a single friend entry representing the authenticated user."
+          }
+        }
+      ]
+    }
+  ]
+}

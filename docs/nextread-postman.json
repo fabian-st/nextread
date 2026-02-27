@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Nextread API",
-    "description": "Postman collection for the Nextread service — a FeedHQ (Google Reader) API to Nextcloud News API translator.",
+    "description": "Postman collection for the Nextread service — a (Google) Reader API to Nextcloud News API translator.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [

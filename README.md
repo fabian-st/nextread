@@ -1,13 +1,13 @@
 # nextread
 
-A service that translates [FeedHQ](https://feedhq.org/) (Google Reader-compatible) API requests into [Nextcloud News](https://github.com/nextcloud/news) API calls, allowing RSS reader clients that support the Google Reader API to connect to a Nextcloud News instance.
+A service that translates (Google) Reader API requests into [Nextcloud News](https://github.com/nextcloud/news) API calls, allowing RSS reader clients that support the Google Reader API to connect to a Nextcloud News instance.
 
 ## How it works
 
 nextread sits between a Google Reader–compatible client and a Nextcloud instance:
 
 ```
-RSS Client  ──FeedHQ API──►  nextread  ──NC News API──►  Nextcloud News
+RSS Client  ──Google Reader API──►  nextread  ──NC News API──►  Nextcloud News
 ```
 
 It handles authentication, request translation, and response mapping transparently.
@@ -26,9 +26,22 @@ npm install
 NEXTCLOUD_URL=https://cloud.example.com npm start
 ```
 
+## Running with Docker
+
+```sh
+docker build -t nextread .
+docker run -e NEXTCLOUD_URL=https://cloud.example.com -p 3000:3000 nextread
+```
+
+Or with Docker Compose:
+
+```sh
+NEXTCLOUD_URL=https://cloud.example.com docker compose up
+```
+
 ## Authentication
 
-Clients authenticate with their Nextcloud username and password via the FeedHQ `ClientLogin` endpoint:
+Clients authenticate with their Nextcloud username and password via the (Google) Reader API `ClientLogin` endpoint:
 
 ```
 POST /accounts/ClientLogin
@@ -45,7 +58,7 @@ Authorization: GoogleLogin auth=<token>
 
 ## Supported API endpoints
 
-| FeedHQ endpoint                           | Nextcloud News equivalent         |
+| (Google) Reader API endpoint              | Nextcloud News equivalent         |
 |-------------------------------------------|-----------------------------------|
 | `POST /accounts/ClientLogin`              | Validates via NC `/version`       |
 | `GET  /reader/api/0/token`                | Issues a POST token               |

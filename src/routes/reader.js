@@ -15,7 +15,7 @@ const {
   ncFolderToTag,
   ncFeedToSubscription,
   ncFeedsToUnreadCounts,
-  ncItemToFeedHQItem,
+  ncItemToReaderItem,
 } = require('../transformers');
 
 const router = express.Router();
@@ -418,7 +418,7 @@ router.get('/stream/contents/*path', async (req, res) => {
     }
 
     const items = await nc.getItems(ncParams);
-    const fhqItems = items.map(item => ncItemToFeedHQItem(item, feeds, userId));
+    const readerItems = items.map(item => ncItemToReaderItem(item, feeds, userId));
 
     // Determine continuation: lowest item ID in the batch (for newest-first pagination)
     let cont;
@@ -435,7 +435,7 @@ router.get('/stream/contents/*path', async (req, res) => {
       title: streamId,
       author: userId,
       updated: Math.floor(Date.now() / 1000),
-      items: fhqItems,
+      items: readerItems,
     };
     if (cont) response.continuation = cont;
 
@@ -512,12 +512,12 @@ async function handleStreamItemsContents(req, res) {
 
     const ncIdSet = new Set(ncIds);
     const matchedItems = allItems.filter(i => ncIdSet.has(i.id));
-    const fhqItems = matchedItems.map(i => ncItemToFeedHQItem(i, feeds, userId));
+    const readerItems = matchedItems.map(i => ncItemToReaderItem(i, feeds, userId));
 
     sendResult(req, res, {
       direction: 'ltr',
       id: 'stream/items/contents',
-      items: fhqItems,
+      items: readerItems,
     });
   } catch (err) {
     const status = err.response ? err.response.status : 500;

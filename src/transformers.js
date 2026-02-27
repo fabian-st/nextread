@@ -106,7 +106,7 @@ function ncFeedsToUnreadCounts(feeds, folders, userId) {
 
 // ─── Item Transformer ────────────────────────────────────────────────────────
 
-function ncItemToFeedHQItem(item, feeds, userId) {
+function ncItemToReaderItem(item, feeds, userId) {
   const feed = feeds.find(f => f.id === item.feedId);
   const categories = [`user/${userId}/state/com.google/reading-list`];
   if (!item.unread) {
@@ -145,5 +145,5 @@ module.exports = {
   ncFolderToTag,
   ncFeedToSubscription,
   ncFeedsToUnreadCounts,
-  ncItemToFeedHQItem,
+  ncItemToReaderItem,
 };

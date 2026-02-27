@@ -1,7 +1,7 @@
 API Reference
 =============
 
-This page lists all API calls implemented in the FeedHQ API. It is important
+This page lists all API calls implemented in the (Google) Reader API. It is important
 to read and understand the :doc:`terminology </api/terminology>` before refering
 to this API reference.
 
@@ -254,7 +254,7 @@ parameters are supported:
 * ``nt``: an epoch timestamp. Items newer than this timestamp are filtered
   out.
 
-*Continuation* is used for pagination. When FeedHQ returns a page, it contains
+*Continuation* is used for pagination. When the API returns a page, it contains
 a ``continuation`` key that can be passed as a ``c`` parameter to fetch the
 next page.
 
@@ -265,12 +265,12 @@ Sample JSON output:
     {
         "direction": "ltr",
         "author": "brutasse",
-        "title": "brutasse's reading list on FeedHQ",
+        "title": "brutasse's reading list",
         "updated": 1405538866,
         "continuation": "page2",
         "id": "user/1/state/com.google/reading-list"
         "self": [{
-            "href": "https://feedhq.org/reader/api/0/stream/contents/user/-/state/com.google/reading-list?output=json"
+            "href": "http://localhost:3000/reader/api/0/stream/contents/user/-/state/com.google/reading-list?output=json"
         }],
         "items": []
     }
@@ -474,7 +474,7 @@ Returns a static response:
     }
 
 Yes, ``value`` is JSON-encoded JSON. ``ssa=true`` tells clients that
-subscriptions are sorted alphabetically. FeedHQ doesn't support custom
+subscriptions are sorted alphabetically. The API doesn't support custom
 sorting.
 
 preference/stream/list
@@ -530,7 +530,7 @@ Undocumented / not implemented
 ------------------------------
 
 The following API calls are known to exist in the Google Reader API but
-haven't been implemented in the FeedHQ API:
+haven't been implemented in the (Google) Reader API:
 
 * /related/list
 * /stream/details

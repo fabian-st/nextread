@@ -1,7 +1,7 @@
 {
   "name": "nextread",
   "version": "1.0.0",
-  "description": "A service for translating FeedHQ (Google Reader) API requests to the Nextcloud News API",
+  "description": "A service for translating (Google) Reader API requests to the Nextcloud News API",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",

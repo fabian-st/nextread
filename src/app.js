@@ -7,7 +7,7 @@ const readerRouter = require('./routes/reader');
 function createApp() {
   const app = express();
 
-  // Parse URL-encoded bodies (FeedHQ POST requests use application/x-www-form-urlencoded)
+  // Parse URL-encoded bodies (Google Reader API POST requests use application/x-www-form-urlencoded)
   app.use(express.urlencoded({ extended: true }));
   // Parse JSON bodies
   app.use(express.json());

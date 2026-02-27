@@ -13,7 +13,7 @@ The root element is a *feed*. It's simply the URL of an RSS feed that gets
 polled for fetching feed items.
 
 Feeds can optionally belong to a *label*. Google reader supported multiple
-labels per feed but FeedHQ only allows feeds to belong to one (or zero) label.
+labels per feed but the API only allows feeds to belong to one (or zero) label.
 
 Feed items — or just *items* — are articles, news items or posts that are
 extracted and stored during feed fetching.
@@ -67,7 +67,7 @@ reading-list                 all items
 starred                      starred items
 ============================ ===============
 
-*broadcast* is more or less a no-op: FeedHQ stores this attribute and lets you
+*broadcast* is more or less a no-op: the API stores this attribute and lets you
 set it but there is no public-facing feature that uses this attribute yet.
 
 All states that are not in this table are treated as *tags*. Items can be
@@ -158,7 +158,7 @@ Clients should store the token from the third line, following the ``Auth=``
 marker.
 
 API tokens expire like web sessions. Clients need to renew them every now and
-then. FeedHQ's expiration time for auth tokens is 7 days. When a token
+then. The auth token expiration time is 7 days. When a token
 expires, the API returns HTTP 401 responses.
 
 Once a token has been generated, it needs to be passed in the HTTP
@@ -199,7 +199,7 @@ The default output format — when nothing is specified by the client — is XML
 POST Token
 ----------
 
-Additionally to authentication, API calls that mutate data in the FeedHQ
+Additionally to authentication, API calls that mutate data in the
 data store and that are made using the ``POST`` method need to include a *POST
 token*.
 
@@ -221,4 +221,4 @@ to ``/reader/api/0/token`` and storing the updated token.
 API Clients should use their tokens as long as they are valid, and renew them
 only when they see the bad-token response.
 
-FeedHQ's POST tokens are valid for 30 minutes.
+POST tokens are valid for 30 minutes.

@@ -26,7 +26,7 @@ npm install
 NEXTCLOUD_URL=https://cloud.example.com npm start
 ```
 
-## Running with Docker
+With Docker
 
 ```sh
 docker build -t nextread .

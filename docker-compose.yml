@@ -1,0 +1,8 @@
+services:
+  nextread:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NEXTCLOUD_URL=${NEXTCLOUD_URL}
+    restart: unless-stopped

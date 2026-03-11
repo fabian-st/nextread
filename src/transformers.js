@@ -109,10 +109,10 @@ function ncFeedsToUnreadCounts(feeds, folders, userId) {
 function ncItemToReaderItem(item, feeds, userId) {
   const feed = feeds.find(f => f.id === item.feedId);
   const categories = [`user/${userId}/state/com.google/reading-list`];
-  if (!item.unread) {
+  if (item.unread === false || item.unread === 0) {
     categories.push(`user/${userId}/state/com.google/read`);
   }
-  if (item.starred) {
+  if (item.starred === true || item.starred === 1) {
     categories.push(`user/${userId}/state/com.google/starred`);
   }
 
